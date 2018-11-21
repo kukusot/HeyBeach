@@ -16,8 +16,6 @@ fun createUrlConnection(params: HttpParams): HttpURLConnection {
         params.queryParams?.forEach { appendQueryParameter(it.key, it.value) }
     }.toString()
 
-    Log.e("fikokurva", "url " + urlString)
-
     val url = URL(urlString)
     val connection = url.openConnection() as HttpURLConnection
     return connection.apply {
