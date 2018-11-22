@@ -1,4 +1,4 @@
-package com.heybeach.main
+package com.heybeach.main.ui
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -16,8 +16,8 @@ class MainViewModel(private val data: MainModel) : ViewModel() {
     }
 
     fun setSelectedFragment(fragmentName: String) {
-        if (fragmentName != data.seletedFragmentName) {
-            data.seletedFragmentName = fragmentName
+        if (fragmentName != data.selectedFragmentName) {
+            data.selectedFragmentName = fragmentName
             _mainModel.value = data
         }
     }

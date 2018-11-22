@@ -11,6 +11,6 @@ class MainModel {
     val fragmentNames =
         arrayListOf(BEACHES, PROFILE)
 
-    var seletedFragmentName = fragmentNames[0]
+    var selectedFragmentName = fragmentNames[0]
 
 }

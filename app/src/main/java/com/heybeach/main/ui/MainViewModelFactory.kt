@@ -1,4 +1,4 @@
-package com.heybeach.main
+package com.heybeach.main.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

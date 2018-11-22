@@ -1,7 +1,6 @@
 package com.heybeach.images
 
 import android.widget.ImageView
-import com.heybeach.di.GlobalInjector
 import com.heybeach.http.Response
 import com.heybeach.utils.dispatchOnMainThread
 import kotlinx.coroutines.CoroutineScope
@@ -10,8 +9,13 @@ import kotlinx.coroutines.launch
 
 
 object ImageLoader {
+    lateinit var remoteDataSource: ImagesRemoteDataSource
+
+    init {
+        ImagesLoaderInjector.inject(this)
+    }
+
     private val scope = CoroutineScope(Dispatchers.Main)
-    private val remoteDataSource: ImagesRemoteDataSource = GlobalInjector.imagesRemoteDataSource
     private val recyclingMap = HashMap<Int, String>()
 
     fun loadImage(url: String, imageView: ImageView) {

@@ -1,7 +1,6 @@
-package com.heybeach.main
+package com.heybeach.main.ui
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.transaction
@@ -12,16 +11,17 @@ import com.heybeach.R
 import com.heybeach.main.data.BEACHES
 import com.heybeach.main.data.MainModel
 import com.heybeach.main.data.PROFILE
+import com.heybeach.main.di.MainActivityInjector
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var viewModelFactory: ViewModelProvider.Factory
+    lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var viewModel: MainViewModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        viewModelFactory = MainInjector.mainViewModelFactory
+        MainActivityInjector.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity() {
     private fun setFragmentVisibility(fragment: Fragment, mainModel: MainModel) {
         supportFragmentManager.transaction {
             val fragmentName = fragment.javaClass.canonicalName!!
-            if (fragmentName == mainModel.seletedFragmentName) {
+            if (fragmentName == mainModel.selectedFragmentName) {
                 show(fragment)
             } else {
                 hide(fragment)
@@ -69,20 +69,5 @@ class MainActivity : AppCompatActivity() {
 
         }
     }
-
-
-    /*   private fun setupRecyclerView() {
-           recyclerView.apply {
-               val dividerItemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL).apply {
-                   setDrawable(ContextCompat.getDrawable(this@MainActivity, R.drawable.divider)!!)
-               }
-               addItemDecoration(dividerItemDecoration)
-
-               layoutManager = StaggeredGridLayoutManager(3, RecyclerView.VERTICAL)
-               beachesAdapter = BeachesAdapter()
-               adapter = beachesAdapter
-           }
-       }*/
-
 
 }
