@@ -2,6 +2,7 @@ package com.heybeach.beaches.ui
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,18 +37,10 @@ class BeachesFragment : Fragment() {
         viewModel.beaches.observe(this, Observer {
             when (it) {
                 is Response.Success -> beachesAdapter.beaches = it.data
-                is Response.Error -> Toast.makeText(context, it.exception.localizedMessage, Toast.LENGTH_LONG).show()
+                is Response.Error -> Log.e("API ERROR", it.exception.toString())
             }
         })
-
-
     }
-
-    override fun onAttach(context: Context?) {
-        BeachesFragmentInjector.inject(this)
-        super.onAttach(context)
-    }
-
 
     private fun setupRecyclerView() {
         recyclerView.apply {
@@ -60,4 +53,10 @@ class BeachesFragment : Fragment() {
             adapter = beachesAdapter
         }
     }
+
+    override fun onAttach(context: Context?) {
+        BeachesFragmentInjector.inject(this)
+        super.onAttach(context)
+    }
+
 }

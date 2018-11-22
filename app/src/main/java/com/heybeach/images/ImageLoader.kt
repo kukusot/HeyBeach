@@ -15,12 +15,12 @@ object ImageLoader {
         ImagesLoaderInjector.inject(this)
     }
 
-    private val scope = CoroutineScope(Dispatchers.Main)
+    private val scope = CoroutineScope(Dispatchers.IO)
     private val recyclingMap = HashMap<Int, String>()
 
     fun loadImage(url: String, imageView: ImageView) {
         recyclingMap[imageView.hashCode()] = url
-        scope.launch(Dispatchers.IO) {
+        scope.launch {
             val bitmapResponse = remoteDataSource.fetchImage(url)
             if (bitmapResponse is Response.Success) {
                 if (recyclingMap[imageView.hashCode()] == url) {

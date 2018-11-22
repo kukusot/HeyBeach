@@ -5,7 +5,7 @@ import com.heybeach.http.*
 
 class BeachesRemoteDataSource(private val service: BeachesService) {
 
-    suspend fun fetchBooks(page: Int) = safeApiCall({ fetchBeachesInternal(page) }, "Unable to fetch beaches")
+    suspend fun fetchBooks(page: Int) = safeApiCall { fetchBeachesInternal(page) }
 
     private suspend fun fetchBeachesInternal(page: Int): Response<List<Beach>> {
         val books = service.getBeaches(page).await()

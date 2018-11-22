@@ -2,4 +2,11 @@
     <string name="app_name">HeyBeach</string>
     <string name="beaches">Beaches</string>
     <string name="profile">Profile</string>
+    <string name="login">Login</string>
+    <string name="signup">Sign Up</string>
+    <string name="log_out">Log out</string>
+    <string name="password">Password</string>
+    <string name="email">Email</string>
+    <string name="email_not_valid">Please enter valid email</string>
+    <string name="password_not_valid">Password must be at least 6 characters</string>
 </resources>

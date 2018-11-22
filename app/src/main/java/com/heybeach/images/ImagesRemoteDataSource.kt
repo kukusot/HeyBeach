@@ -5,8 +5,7 @@ import com.heybeach.http.*
 
 class ImagesRemoteDataSource(private val service: ImagesService) {
 
-    suspend fun fetchImage(url: String) =
-        safeApiCall({ loadImageInternal(url) }, "Error fetching image with url $url")
+    suspend fun fetchImage(url: String) = safeApiCall { loadImageInternal(url) }
 
     private suspend fun loadImageInternal(path: String): Response<Bitmap> {
         val image = service.fetchImage(path).await()

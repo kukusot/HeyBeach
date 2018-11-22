@@ -11,8 +11,8 @@ class ImagesService {
 
     fun fetchImage(path: String): Deferred<Bitmap> {
         val params = HttpParams(path, RequestMethod.GET)
-        return executeHttpRequest(params) {
-            BitmapFactory.decodeStream(it)
+        return executeHttpRequest(params) { stream, _ ->
+            BitmapFactory.decodeStream(stream)
         }
 
     }

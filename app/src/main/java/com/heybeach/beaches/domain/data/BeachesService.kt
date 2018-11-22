@@ -10,8 +10,8 @@ class BeachesService {
 
     fun getBeaches(page: Int): Deferred<List<Beach>> {
         val params = HttpParams("beaches", RequestMethod.GET, hashMapOf("page" to page.toString()))
-        return executeHttpRequest(params) {
-            parseBeachesResponse(it)
+        return executeHttpRequest(params) { stream, _ ->
+            parseBeachesResponse(stream)
         }
     }
 }

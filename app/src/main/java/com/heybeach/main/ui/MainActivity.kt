@@ -43,7 +43,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         setupViewModel()
-        //testSignUp()
     }
 
     private fun setupViewModel() {
@@ -78,22 +77,6 @@ class MainActivity : AppCompatActivity() {
             }
 
         }
-    }
-
-    private fun testSignUp() {
-        val payload = JSONObject()
-        payload.put("email", "tester@qwert.com")
-        payload.put("password", "qwer1234")
-        val params = HttpParams("user/register", RequestMethod.POST, body = payload.toString())
-
-        val scope = CoroutineScope(Dispatchers.IO)
-        scope.launch {
-            val result = executeHttpRequest(params) {
-                it.readResponseAndClose()
-            }.await()
-            Log.e("fikokurva", "signup " + result)
-        }
-
     }
 
 }

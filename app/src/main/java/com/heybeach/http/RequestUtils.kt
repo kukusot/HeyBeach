@@ -11,6 +11,29 @@ import java.net.HttpURLConnection
 import java.net.URL
 
 const val BASE_URL = "http://techtest.lab1886.io:3000/"
+const val TIMEOUT = 5000
+
+fun <T> executeHttpRequest(
+    params: HttpParams,
+    parse: (stream: InputStream, headers: Map<String, List<String>>) -> T
+): Deferred<T> {
+    val deferred = CompletableDeferred<T>()
+
+    val urlConnection = createUrlConnection(params)
+    val responseCode = urlConnection.responseCode
+
+    if (responseCode < 400) {
+        deferred.complete(parse(urlConnection.inputStream, urlConnection.headerFields))
+    } else {
+        val errorMessage = urlConnection.errorStream.bufferedReader(Charsets.UTF_8).readText()
+        deferred.completeExceptionally(Exception(errorMessage))
+    }
+
+    urlConnection.inputStream.close()
+    urlConnection.disconnect()
+
+    return deferred
+}
 
 fun createUrlConnection(params: HttpParams): HttpURLConnection {
     val urlString = Uri.parse(BASE_URL + params.path).buildUpon().apply {
@@ -22,27 +45,18 @@ fun createUrlConnection(params: HttpParams): HttpURLConnection {
     return connection.apply {
         setRequestProperty("Accept", "application/json")
         setRequestProperty("Content-Type", "application/json")
+        params.headers?.forEach {
+            setRequestProperty(it.key, it.value)
+        }
+
+        readTimeout = TIMEOUT
+        connectTimeout = TIMEOUT
+        doInput = true
         requestMethod = params.method.name
         if (params.body != null) {
             this withBody params.body
         }
     }
-}
-
-fun <T> executeHttpRequest(params: HttpParams, parse: (stream: InputStream) -> T): Deferred<T> {
-    val deferred = CompletableDeferred<T>()
-
-    val urlConnection = createUrlConnection(params)
-    val responseCode = urlConnection.responseCode
-
-    if (responseCode < 400) {
-        deferred.complete(parse(urlConnection.inputStream))
-    } else {
-        val errorMessage = urlConnection.errorStream.bufferedReader(Charsets.UTF_8).readText()
-        deferred.completeExceptionally(Exception(errorMessage))
-    }
-
-    return deferred
 }
 
 infix fun HttpURLConnection.withBody(body: String) {
