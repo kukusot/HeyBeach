@@ -4,6 +4,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.heybeach.beaches.domain.data.BeachesRemoteDataSource
 import com.heybeach.beaches.domain.data.BeachesRepository
+import com.heybeach.beaches.domain.data.BeachesService
 import com.heybeach.beaches.ui.BeachesAdapter
 import com.heybeach.beaches.ui.BeachesFragment
 import com.heybeach.beaches.ui.BeachesViewModelFactory
@@ -14,7 +15,11 @@ object BeachesFragmentInjector {
         BeachesViewModelFactory(repository())
     }
 
-    private fun repository() = BeachesRepository(BeachesRemoteDataSource())
+    private val beachesService: BeachesService by lazy {
+        BeachesService()
+    }
+
+    private fun repository() = BeachesRepository(BeachesRemoteDataSource(beachesService))
 
     fun inject(fragment: BeachesFragment) {
         fragment.beachesViewModelFactory = beachesViewModelFactory

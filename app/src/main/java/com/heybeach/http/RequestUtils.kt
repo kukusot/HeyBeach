@@ -5,6 +5,7 @@ import android.util.Log
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Deferred
 import java.io.InputStream
+import java.io.OutputStreamWriter
 import java.lang.Exception
 import java.net.HttpURLConnection
 import java.net.URL
@@ -22,6 +23,9 @@ fun createUrlConnection(params: HttpParams): HttpURLConnection {
         setRequestProperty("Accept", "application/json")
         setRequestProperty("Content-Type", "application/json")
         requestMethod = params.method.name
+        if (params.body != null) {
+            this withBody params.body
+        }
     }
 }
 
@@ -39,4 +43,10 @@ fun <T> executeHttpRequest(params: HttpParams, parse: (stream: InputStream) -> T
     }
 
     return deferred
+}
+
+infix fun HttpURLConnection.withBody(body: String) {
+    val writer = OutputStreamWriter(outputStream)
+    writer.write(body)
+    writer.close()
 }

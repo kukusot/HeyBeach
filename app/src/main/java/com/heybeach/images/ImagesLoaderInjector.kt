@@ -3,8 +3,12 @@ package com.heybeach.images
 
 object ImagesLoaderInjector {
 
-    val imagesRemoteDataSource: ImagesRemoteDataSource by lazy {
-        ImagesRemoteDataSource()
+    private val imagesService: ImagesService by lazy {
+        ImagesService()
+    }
+
+    private val imagesRemoteDataSource: ImagesRemoteDataSource by lazy {
+        ImagesRemoteDataSource(imagesService)
     }
 
     fun inject(imageLoader: ImageLoader) {
