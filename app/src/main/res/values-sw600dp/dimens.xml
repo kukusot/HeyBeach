@@ -4,5 +4,8 @@
     <dimen name="user_field_text_size">22sp</dimen>
     <dimen name="auth_edit_text_size">18sp</dimen>
     <dimen name="input_layout_text_size">16sp</dimen>
+    <dimen name="name_text_size">18sp</dimen>
+    <dimen name="image_name_vertical_padding">6dp</dimen>
+    <dimen name="image_name_horizontal_padding">12dp</dimen>
 
 </resources>

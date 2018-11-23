@@ -32,8 +32,9 @@ class BeachesAdapter : RecyclerView.Adapter<BeachesAdapter.BeachViewHolder>() {
 
     class BeachViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        fun onBind(image: Beach?) {
-            ImageLoader.loadImage(image!!.url, itemView.imageView)
+        fun onBind(image: Beach) {
+            ImageLoader.loadImage(image.url, itemView.imageView)
+            itemView.imageName.text = image.name
         }
     }
 }

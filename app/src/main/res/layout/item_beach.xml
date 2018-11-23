@@ -1,17 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
                                    xmlns:app="http://schemas.android.com/apk/res-auto"
-                                   android:layout_width="match_parent"
-                                   android:layout_height="wrap_content"
+                                   xmlns:tools="http://schemas.android.com/tools"
+                                   android:layout_width="match_parent" android:layout_height="wrap_content"
                                    android:orientation="vertical"
-                                   app:cardCornerRadius="2dp"
-                                   app:cardElevation="1dp">
+                                   app:cardCornerRadius="4dp"
+                                   app:cardElevation="2dp">
 
-    <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="200dp"
-            android:adjustViewBounds="true"/>
+    <ImageView android:id="@+id/imageView"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:minHeight="200dp"
+               android:adjustViewBounds="true"/>
+
+    <TextView android:layout_width="match_parent"
+              android:id="@+id/imageName"
+              tools:text="Image Name"
+              android:textSize="@dimen/name_text_size"
+              android:textColor="@color/colorPrimaryDark"
+              android:background="@color/nameBackground"
+              android:layout_gravity="bottom"
+              android:paddingLeft="@dimen/image_name_horizontal_padding"
+              android:paddingRight="@dimen/image_name_horizontal_padding"
+              android:paddingTop="@dimen/image_name_vertical_padding"
+              android:paddingBottom="@dimen/image_name_vertical_padding"
+              android:layout_height="wrap_content"/>
 
 </androidx.cardview.widget.CardView>
