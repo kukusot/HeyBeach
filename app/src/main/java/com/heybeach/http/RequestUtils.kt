@@ -4,6 +4,7 @@ import android.net.Uri
 import android.util.Log
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Deferred
+import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStreamWriter
 import java.lang.Exception
@@ -24,12 +25,13 @@ fun <T> executeHttpRequest(
 
     if (responseCode < 400) {
         deferred.complete(parse(urlConnection.inputStream, urlConnection.headerFields))
+        urlConnection.inputStream.close()
     } else {
         val errorMessage = urlConnection.errorStream.bufferedReader(Charsets.UTF_8).readText()
-        deferred.completeExceptionally(Exception(errorMessage))
+        urlConnection.errorStream.close()
+        deferred.completeExceptionally(IOException(errorMessage))
     }
 
-    urlConnection.inputStream.close()
     urlConnection.disconnect()
 
     return deferred
@@ -45,6 +47,7 @@ fun createUrlConnection(params: HttpParams): HttpURLConnection {
     return connection.apply {
         setRequestProperty("Accept", "application/json")
         setRequestProperty("Content-Type", "application/json")
+        setRequestProperty("Cache-Control", "no-cache")
         params.headers?.forEach {
             setRequestProperty(it.key, it.value)
         }

@@ -20,11 +20,9 @@ import kotlinx.android.synthetic.main.fragment_beaches.*
 
 class BeachesFragment : Fragment() {
 
-    lateinit var beachesViewModelFactory: BeachesViewModelFactory
     lateinit var beachesAdapter: BeachesAdapter
     lateinit var layoutManager: RecyclerView.LayoutManager
-
-    private lateinit var viewModel: BeachesViewModel
+    lateinit var viewModel: BeachesViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) =
         inflater.inflate(R.layout.fragment_beaches, container, false)!!
@@ -33,7 +31,6 @@ class BeachesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
 
-        viewModel = ViewModelProviders.of(this, beachesViewModelFactory).get(BeachesViewModel::class.java)
         viewModel.beaches.observe(this, Observer {
             when (it) {
                 is Response.Success -> beachesAdapter.beaches = it.data

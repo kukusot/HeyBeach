@@ -3,6 +3,8 @@ package com.heybeach.app
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
+import com.heybeach.profile.domain.data.AuthService
+import com.heybeach.profile.domain.data.UserRemoteDataSource
 
 @SuppressLint("StaticFieldLeak")
 object GlobalProvider {
@@ -12,6 +14,10 @@ object GlobalProvider {
 
     lateinit var preferences: SharedPreferences
         private set
+
+    val authRemoteDataSource: UserRemoteDataSource by lazy {
+        UserRemoteDataSource(AuthService())
+    }
 
     fun init(app: App) {
         appContext = app

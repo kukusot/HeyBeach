@@ -25,9 +25,7 @@ import org.json.JSONObject
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-    private lateinit var viewModel: MainViewModel
-
+    lateinit var viewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         MainActivityInjector.inject(this)
@@ -46,7 +44,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupViewModel() {
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(MainViewModel::class.java)
         viewModel.mainModel.observe(this, Observer { mainModel ->
             setupFragments(mainModel)
         })

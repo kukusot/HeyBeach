@@ -9,4 +9,7 @@
     <string name="email">Email</string>
     <string name="email_not_valid">Please enter valid email</string>
     <string name="password_not_valid">Password must be at least 6 characters</string>
+    <string name="error_logging_in">Error logging in</string>
+    <string name="error_sign_up">Error signup</string>
+    <string name="welcome">Welcome %s</string>
 </resources>

@@ -1,40 +1,58 @@
 package com.heybeach.profile.auth.ui
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.snackbar.Snackbar
 import com.heybeach.R
 import com.heybeach.profile.auth.di.AuthActivityInjector
-import com.heybeach.profile.domain.model.ACTION_KEY
-import com.heybeach.profile.domain.model.LOG_IN
-import com.heybeach.profile.domain.model.SignupModel
-import com.heybeach.profile.domain.model.ValidationError
+import com.heybeach.profile.domain.model.*
+import com.heybeach.profile.ui.USER_KEY
+import com.heybeach.utils.closeSoftKeyboard
 import com.heybeach.utils.createHtmlText
 import kotlinx.android.synthetic.main.activity_auth.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class AuthActivity : AppCompatActivity() {
 
-    lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var viewModel: AuthViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AuthActivityInjector.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_auth)
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(AuthViewModel::class.java)
 
         val action = intent.getStringExtra(ACTION_KEY)
         setupTitles(action)
         viewModel.action = action
 
         actionButton.setOnClickListener {
-            val signupModel = SignupModel(emailEdit.text.toString(), passwordEdit.text.toString())
-            viewModel.signup(signupModel)
+            submitForm()
+        }
+
+        passwordEdit.setOnEditorActionListener { v, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                v.closeSoftKeyboard()
+                submitForm()
+                return@setOnEditorActionListener true
+            }
+            return@setOnEditorActionListener false
         }
 
         observeViewModel()
+    }
+
+    private fun submitForm() {
+        val signupModel = SignupModel(emailEdit.text.toString(), passwordEdit.text.toString())
+        viewModel.validateAndAuth(signupModel)
     }
 
     private fun observeViewModel() {
@@ -50,7 +68,36 @@ class AuthActivity : AppCompatActivity() {
             }
 
         })
-        viewModel.networkState.observe(this, Observer { })
+
+        viewModel.uiState.observe(this, Observer { uiModel ->
+            showProgress(uiModel.showProgress)
+
+            if (uiModel.errorMessage != null) {
+                Snackbar.make(parentView, uiModel.errorMessage, Snackbar.LENGTH_LONG).show()
+            }
+
+            if (uiModel.authSuccess != null) {
+                val user = uiModel.authSuccess
+                val welcomeMessage = getString(R.string.welcome, user.email)
+                Snackbar.make(parentView, welcomeMessage, Snackbar.LENGTH_LONG).show()
+                setResultAndFinish(user)
+            }
+        })
+    }
+
+    private fun setResultAndFinish(user: User) {
+        GlobalScope.launch {
+            delay(1500)
+            val data = Intent().apply {
+                putExtra(USER_KEY, user)
+            }
+            setResult(Activity.RESULT_OK, data)
+            finish()
+        }
+    }
+
+    private fun showProgress(show: Boolean) {
+        progress.visibility = if (show) View.VISIBLE else View.INVISIBLE
     }
 
     private fun setupTitles(action: String) {

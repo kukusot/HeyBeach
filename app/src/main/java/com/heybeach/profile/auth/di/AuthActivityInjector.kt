@@ -1,29 +1,20 @@
 package com.heybeach.profile.auth.di
 
+import androidx.lifecycle.ViewModelProviders
 import com.heybeach.app.GlobalProvider
 import com.heybeach.profile.auth.ui.AuthActivity
+import com.heybeach.profile.auth.ui.AuthViewModel
 import com.heybeach.profile.auth.ui.AuthViewModelFactory
 import com.heybeach.profile.domain.data.AuthProvider
-import com.heybeach.profile.domain.data.AuthRemoteDataSource
-import com.heybeach.profile.domain.data.AuthRepository
-import com.heybeach.profile.domain.data.AuthService
 
 object AuthActivityInjector {
 
     fun inject(activity: AuthActivity) {
-        activity.viewModelFactory = provideAuthViewModelFactory()
+        activity.viewModel = ViewModelProviders.of(activity, provideAuthViewModelFactory()).get(AuthViewModel::class.java)
     }
 
-    private val authRemoteDataSource: AuthRemoteDataSource by lazy {
-        AuthRemoteDataSource(AuthService())
-    }
+    private fun provideAuthProvider() = AuthProvider(GlobalProvider.preferences, GlobalProvider.authRemoteDataSource)
 
-    private val authRepository: AuthRepository by lazy {
-        AuthRepository(authRemoteDataSource, provideAuthProvider())
-    }
-
-    private fun provideAuthProvider() = AuthProvider(GlobalProvider.preferences)
-
-    private fun provideAuthViewModelFactory() = AuthViewModelFactory(authRepository)
+    private fun provideAuthViewModelFactory() = AuthViewModelFactory(provideAuthProvider())
 
 }
