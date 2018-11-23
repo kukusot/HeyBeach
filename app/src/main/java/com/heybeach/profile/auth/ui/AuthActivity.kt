@@ -3,12 +3,9 @@ package com.heybeach.profile.auth.ui
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
 import com.heybeach.R
 import com.heybeach.profile.auth.di.AuthActivityInjector
@@ -16,6 +13,7 @@ import com.heybeach.profile.domain.model.*
 import com.heybeach.profile.ui.USER_KEY
 import com.heybeach.utils.closeSoftKeyboard
 import com.heybeach.utils.createHtmlText
+import com.heybeach.utils.setVisibility
 import kotlinx.android.synthetic.main.activity_auth.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -97,7 +95,7 @@ class AuthActivity : AppCompatActivity() {
     }
 
     private fun showProgress(show: Boolean) {
-        progress.visibility = if (show) View.VISIBLE else View.INVISIBLE
+        progress.setVisibility(show)
     }
 
     private fun setupTitles(action: String) {

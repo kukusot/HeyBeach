@@ -25,3 +25,7 @@ fun Context.getInputManager() = getSystemService(Context.INPUT_METHOD_SERVICE) a
 fun View.closeSoftKeyboard() {
     context.getInputManager().hideSoftInputFromWindow(windowToken, 0)
 }
+
+fun View.setVisibility(visible: Boolean) {
+    visibility = if (visible) View.VISIBLE else View.INVISIBLE
+}

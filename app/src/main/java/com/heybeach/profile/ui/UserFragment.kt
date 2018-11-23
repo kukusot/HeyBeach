@@ -6,11 +6,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.*
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import com.google.android.material.snackbar.Snackbar
 import com.heybeach.R
 import com.heybeach.profile.auth.ui.AuthActivity
 import com.heybeach.profile.di.UserFragmentInjector
@@ -18,6 +18,7 @@ import com.heybeach.profile.domain.model.ACTION_KEY
 import com.heybeach.profile.domain.model.LOG_IN
 import com.heybeach.profile.domain.model.SIGN_UP
 import com.heybeach.profile.domain.model.User
+import com.heybeach.utils.setVisibility
 import kotlinx.android.synthetic.main.fragment_user.*
 
 const val AUTH_REQUEST_CODE = 1001
@@ -41,6 +42,59 @@ class UserFragment : Fragment() {
         signupButton.setOnClickListener {
             startAuthActivity(SIGN_UP)
         }
+
+        logOutButton.setOnClickListener {
+            viewModel.logOut()
+        }
+
+        observeVIewModel()
+    }
+
+    private fun observeVIewModel() {
+        viewModel.userData.observe(this, Observer { uiModel ->
+            if (uiModel.loggedIn) {
+                showLoggedInState()
+            } else {
+                showDefaultState()
+            }
+
+            progress.setVisibility(uiModel.loading)
+
+            showUserInfo(uiModel.user)
+
+            if (uiModel.errorMessage != null) {
+                Snackbar.make(parentView, uiModel.errorMessage, Snackbar.LENGTH_LONG).apply {
+                    setAction(R.string.try_again) {
+                        viewModel.fetchUser()
+                    }
+                    show()
+                }
+            }
+        })
+    }
+
+    private fun showUserInfo(user: User?) {
+        val textVisibility = (user != null)
+        emailText.apply {
+            setVisibility(textVisibility)
+            text = getString(R.string.email_formatted, user?.email)
+        }
+        idText.apply {
+            setVisibility(textVisibility)
+            text = getString(R.string.id_formatted, user?.id)
+        }
+    }
+
+    private fun showDefaultState() {
+        loginButton.visibility = VISIBLE
+        signupButton.visibility = VISIBLE
+        logOutButton.visibility = INVISIBLE
+    }
+
+    private fun showLoggedInState() {
+        loginButton.visibility = INVISIBLE
+        signupButton.visibility = INVISIBLE
+        logOutButton.visibility = VISIBLE
     }
 
     private fun startAuthActivity(action: String) {
@@ -53,10 +107,9 @@ class UserFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == AUTH_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             val user: User? = data?.getParcelableExtra(USER_KEY)
-            Toast.makeText(context, "welcome " + user?.email, Toast.LENGTH_SHORT).show()
+            viewModel.onLoggedIn(user)
         }
     }
-
 
     override fun onAttach(context: Context?) {
         UserFragmentInjector.inject(this)

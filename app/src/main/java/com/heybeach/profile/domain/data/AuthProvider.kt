@@ -13,6 +13,13 @@ class AuthProvider(private val preferences: SharedPreferences, private val remot
 
     fun hasUser() = preferences.contains(AUTH_KEY)
 
+    var token: String?
+        get() = preferences.getString(AUTH_KEY, "")
+        set(value) {
+            preferences.edit {
+                putString(AUTH_KEY, value)
+            }
+        }
 
     suspend fun doAuth(email: String, password: String, action: String): Response<UserResponse> {
         val userResponse = if (action == SIGN_UP) {
@@ -40,13 +47,5 @@ class AuthProvider(private val preferences: SharedPreferences, private val remot
             remove(AUTH_KEY)
         }
     }
-
-    var token: String?
-        get() = preferences.getString(AUTH_KEY, "")
-        set(value) {
-            preferences.edit {
-                putString(AUTH_KEY, value)
-            }
-        }
 
 }
