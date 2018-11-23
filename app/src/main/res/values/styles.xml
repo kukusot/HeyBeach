@@ -24,4 +24,13 @@
         <item name="colorControlHighlight">@color/colorAccent</item>
     </style>
 
+    <style name="HintStyle" parent="TextAppearance.Design.Hint">
+        <item name="android:textSize">@dimen/input_layout_text_size</item>
+    </style>
+
+    <style name="AuthEditText">
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">@dimen/auth_edit_text_size</item>
+    </style>
+
 </resources>
