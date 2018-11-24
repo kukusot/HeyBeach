@@ -2,20 +2,18 @@ package com.heybeach.beaches.ui
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.heybeach.R
 import com.heybeach.beaches.di.BeachesFragmentInjector
-import com.heybeach.http.Response
+import com.heybeach.beaches.domain.data.NetworkState
 import kotlinx.android.synthetic.main.fragment_beaches.*
 
 class BeachesFragment : Fragment() {
@@ -31,10 +29,22 @@ class BeachesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
 
-        viewModel.beaches.observe(this, Observer {
-            when (it) {
-                is Response.Success -> beachesAdapter.beaches = it.data
-                is Response.Error -> Log.e("API ERROR", it.exception.toString())
+        observeViewModel()
+    }
+
+    private fun observeViewModel() {
+        viewModel.imagesDataResult.observe(this, Observer {
+            beachesAdapter.submitList(it)
+        })
+
+        viewModel.networkState.observe(this, Observer {
+            if (it == NetworkState.ERROR) {
+                Snackbar.make(parentView, R.string.error_fetching_data, Snackbar.LENGTH_LONG).apply {
+                    setAction(R.string.try_again){
+                        viewModel.retry()
+                    }
+                    show()
+                }
             }
         })
     }

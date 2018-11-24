@@ -1,33 +1,32 @@
 package com.heybeach.beaches.ui
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import com.heybeach.beaches.domain.data.BeachesRemoteDataSource
-import com.heybeach.beaches.domain.data.BeachesRepository
+import androidx.paging.LivePagedListBuilder
+import androidx.paging.PagedList
+import com.heybeach.beaches.domain.data.BeachesDataSourceFactory
 import com.heybeach.beaches.domain.model.Beach
 import com.heybeach.core.BaseViewModel
-import com.heybeach.http.Response
-import com.heybeach.utils.dispatchOnMainThread
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 
-class BeachesViewModel(private val repository: BeachesRepository) : BaseViewModel() {
+class BeachesViewModel(private val dataSourceFactory: BeachesDataSourceFactory) : BaseViewModel() {
 
+    val imagesDataResult: LiveData<PagedList<Beach>> =
+        LivePagedListBuilder(dataSourceFactory, pagedListConfig).build()
 
-    private var _beaches = MutableLiveData<Response<List<Beach>>>()
-    val beaches: LiveData<Response<List<Beach>>>
-        get() = _beaches
+    val networkState = dataSourceFactory.dataSource.networkState
 
-    init {
-        scope.launch {
-            val response = repository.getBeaches()
-            dispatchOnMainThread {
-                _beaches.value = response
-            }
-        }
+    override fun onCleared() {
+        super.onCleared()
+        dataSourceFactory.dataSource.clear()
     }
 
+    fun retry() {
+        dataSourceFactory.dataSource.retry()
+    }
 }
+
+const val PAGE_SIZE = 6
+val pagedListConfig = PagedList.Config.Builder().apply {
+    setEnablePlaceholders(false)
+    setInitialLoadSizeHint(PAGE_SIZE)
+    setPageSize(PAGE_SIZE)
+}.build()

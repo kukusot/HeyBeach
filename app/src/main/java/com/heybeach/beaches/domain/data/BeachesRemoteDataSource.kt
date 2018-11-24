@@ -1,14 +1,12 @@
 package com.heybeach.beaches.domain.data
 
-import com.heybeach.beaches.domain.model.Beach
 import com.heybeach.http.*
 
 class BeachesRemoteDataSource(private val service: BeachesService) {
 
-    suspend fun fetchBooks(page: Int) = safeApiCall { fetchBeachesInternal(page) }
-
-    private suspend fun fetchBeachesInternal(page: Int): Response<List<Beach>> {
-        val books = service.getBeaches(page).await()
-        return Response.Success(books)
+    suspend fun fetchBeaches(page: Int) = safeApiCall {
+        val beaches = service.getBeaches(page).await()
+        Response.Success(beaches)
     }
+
 }

@@ -7,11 +7,10 @@
                                    app:cardCornerRadius="4dp"
                                    app:cardElevation="2dp">
 
-    <ImageView android:id="@+id/imageView"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:minHeight="200dp"
-               android:adjustViewBounds="true"/>
+    <com.heybeach.ui.RatioImageView android:id="@+id/imageView"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:adjustViewBounds="true"/>
 
     <TextView android:layout_width="match_parent"
               android:id="@+id/imageName"
