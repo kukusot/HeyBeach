@@ -28,10 +28,12 @@ class BeachesAdapter : PagedListAdapter<Beach, BeachesAdapter.BeachViewHolder>(B
 
         fun onBind(image: Beach?) {
             if (image != null) {
+                itemView.imageView.ratio = image.ratio()
                 ImageLoader.loadImage(image.url, itemView.imageView)
                 itemView.imageName.text = image.name
             } else {
                 itemView.imageView.setImageBitmap(null)
+                itemView.imageView.ratio = 1f
                 itemView.imageName.text = ""
             }
         }

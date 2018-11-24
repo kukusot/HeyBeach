@@ -1,8 +1,11 @@
 package com.heybeach.beaches.di
 
+import android.content.Context
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.heybeach.R
 import com.heybeach.beaches.domain.data.*
 import com.heybeach.beaches.ui.BeachesAdapter
 import com.heybeach.beaches.ui.BeachesFragment
@@ -24,10 +27,17 @@ object BeachesFragmentInjector {
 
     private fun dataSourceFactory() = BeachesDataSourceFactory(BeachesDataSource(beachesRemoteDataSource))
 
+    private fun provideLayoutManager(context: Context): RecyclerView.LayoutManager {
+        return StaggeredGridLayoutManager(
+            context.resources.getInteger(R.integer.grid_columns_number),
+            LinearLayoutManager.VERTICAL
+        )
+    }
+
     fun inject(fragment: BeachesFragment) {
         fragment.viewModel =
                 ViewModelProviders.of(fragment, provideViewModelFactory()).get(BeachesViewModel::class.java)
         fragment.beachesAdapter = BeachesAdapter()
-        fragment.layoutManager = LinearLayoutManager(fragment.context, RecyclerView.VERTICAL, false)
+        fragment.layoutManager = provideLayoutManager(fragment.context!!)
     }
 }

@@ -5,14 +5,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.heybeach.R
 import com.heybeach.beaches.di.BeachesFragmentInjector
-import com.heybeach.beaches.domain.data.NetworkState
+import com.heybeach.beaches.domain.data.NetworkState.*
+import com.heybeach.utils.setVisibility
 import com.heybeach.utils.showRetrySnackBar
 import kotlinx.android.synthetic.main.fragment_beaches.*
 
@@ -38,21 +37,22 @@ class BeachesFragment : Fragment() {
         })
 
         viewModel.networkState.observe(this, Observer {
-            if (it == NetworkState.ERROR) {
-                parentView.showRetrySnackBar {
+            when (it) {
+                ERROR -> parentView.showRetrySnackBar {
                     viewModel.retry()
+                    progress.setVisibility(false)
                 }
+                LOADING -> progress.setVisibility(true)
+                SUCCESS -> progress.setVisibility(false)
+                null -> progress.setVisibility(false)
             }
         })
     }
 
     private fun setupRecyclerView() {
         recyclerView.apply {
-            val dividerItemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL).apply {
-                setDrawable(ContextCompat.getDrawable(context, R.drawable.divider)!!)
-            }
-            addItemDecoration(dividerItemDecoration)
-
+            addItemDecoration(GridDivider(context))
+            setHasFixedSize(true)
             layoutManager = this@BeachesFragment.layoutManager
             adapter = beachesAdapter
         }

@@ -1,6 +1,7 @@
 package com.heybeach.images
 
 import android.widget.ImageView
+import com.heybeach.R
 import com.heybeach.http.Response
 import com.heybeach.utils.dispatchOnMainThread
 import kotlinx.coroutines.CoroutineScope
@@ -25,23 +26,27 @@ object ImageLoader {
 
         if (memoryCache.hasItem(url)) {
             imageView.setImageBitmap(memoryCache.get(url))
-        }
+        } else {
+            imageView.setImageResource(R.drawable.ic_images)
+            scope.launch {
+                val bitmapResponse = remoteDataSource.fetchImage(url)
+                if (bitmapResponse is Response.Success) {
+                    val bitmap = bitmapResponse.data
+                    memoryCache.cache(url, bitmap)
 
-        scope.launch {
-            val bitmapResponse = remoteDataSource.fetchImage(url)
-            if (bitmapResponse is Response.Success) {
-                val bitmap = bitmapResponse.data
-                memoryCache.cache(url, bitmap)
-
-                //Ensure that we are displaying the right the viewholder.
-                if (recyclingMap[imageView.hashCode()] == url) {
-                    dispatchOnMainThread {
-                        imageView.setImageBitmap(bitmap)
+                    //Ensure that we are displaying the right the viewholder.
+                    if (recyclingMap[imageView.hashCode()] == url) {
+                        dispatchOnMainThread {
+                            imageView.setImageBitmap(bitmap)
+                        }
                     }
                 }
             }
         }
+
+
     }
+
 
 }
 

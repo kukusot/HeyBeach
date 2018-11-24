@@ -7,5 +7,6 @@
     <dimen name="name_text_size">18sp</dimen>
     <dimen name="image_name_vertical_padding">6dp</dimen>
     <dimen name="image_name_horizontal_padding">12dp</dimen>
+    <dimen name="grid_divider_size">6dp</dimen>
 
 </resources>

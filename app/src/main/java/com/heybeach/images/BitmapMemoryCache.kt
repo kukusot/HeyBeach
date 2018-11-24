@@ -8,7 +8,7 @@ const val BYTES_IN_KILOBYTE = 1024
 class BitmapMemoryCache {
 
     private val maxMemory = (Runtime.getRuntime().maxMemory() / BYTES_IN_KILOBYTE).toInt()
-    private val cacheSize = maxMemory / 8
+    private val cacheSize = maxMemory / 2
     private val bitmapCache = BitmapLruCache(cacheSize)
 
     fun hasItem(bitmapUrl: String) = bitmapCache[bitmapUrl] != null

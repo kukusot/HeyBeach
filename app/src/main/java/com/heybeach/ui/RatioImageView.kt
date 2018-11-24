@@ -6,9 +6,17 @@ import android.widget.ImageView
 
 class RatioImageView(ctx: Context, attributeSet: AttributeSet) : ImageView(ctx, attributeSet) {
 
-    fun setRatio(width: Int, height: Int) {
-        layoutParams.height = this.width * (height / width)
-        invalidate()
+    private var _measuredWidth: Int = 0
+    var ratio: Float = 1f
+        set(value) {
+            field = value
+            invalidate()
+        }
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        _measuredWidth = MeasureSpec.getSize(widthMeasureSpec)
+        val rationHeight = (_measuredWidth * ratio).toInt()
+        setMeasuredDimension(_measuredWidth, rationHeight)
     }
 
 }
