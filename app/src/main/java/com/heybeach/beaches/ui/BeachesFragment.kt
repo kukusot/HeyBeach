@@ -10,10 +10,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
 import com.heybeach.R
 import com.heybeach.beaches.di.BeachesFragmentInjector
 import com.heybeach.beaches.domain.data.NetworkState
+import com.heybeach.utils.showRetrySnackBar
 import kotlinx.android.synthetic.main.fragment_beaches.*
 
 class BeachesFragment : Fragment() {
@@ -39,11 +39,8 @@ class BeachesFragment : Fragment() {
 
         viewModel.networkState.observe(this, Observer {
             if (it == NetworkState.ERROR) {
-                Snackbar.make(parentView, R.string.error_fetching_data, Snackbar.LENGTH_LONG).apply {
-                    setAction(R.string.try_again){
-                        viewModel.retry()
-                    }
-                    show()
+                parentView.showRetrySnackBar {
+                    viewModel.retry()
                 }
             }
         })

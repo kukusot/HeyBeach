@@ -6,6 +6,8 @@ import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import com.google.android.material.snackbar.Snackbar
+import com.heybeach.R
 
 @Suppress("DEPRECATION")
 fun String?.createHtmlText(): CharSequence {
@@ -28,4 +30,13 @@ fun View.closeSoftKeyboard() {
 
 fun View.setVisibility(visible: Boolean) {
     visibility = if (visible) View.VISIBLE else View.INVISIBLE
+}
+
+fun View.showRetrySnackBar(action: () -> Unit) {
+    Snackbar.make(this, R.string.error_fetching_data, Snackbar.LENGTH_LONG).apply {
+        setAction(R.string.try_again) {
+            action()
+        }
+        show()
+    }
 }
