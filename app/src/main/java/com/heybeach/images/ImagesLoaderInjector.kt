@@ -11,7 +11,12 @@ object ImagesLoaderInjector {
         ImagesRemoteDataSource(imagesService)
     }
 
+    private val bitmapMemoryCache: BitmapMemoryCache by lazy {
+        BitmapMemoryCache()
+    }
+
     fun inject(imageLoader: ImageLoader) {
         imageLoader.remoteDataSource = imagesRemoteDataSource
+        imageLoader.memoryCache = bitmapMemoryCache
     }
 }

@@ -1,27 +1,16 @@
 package com.heybeach.main.ui
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.transaction
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.heybeach.R
-import com.heybeach.http.HttpParams
-import com.heybeach.http.RequestMethod
-import com.heybeach.http.executeHttpRequest
-import com.heybeach.http.readResponseAndClose
 import com.heybeach.main.data.BEACHES
 import com.heybeach.main.data.MainModel
 import com.heybeach.main.data.PROFILE
 import com.heybeach.main.di.MainActivityInjector
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import org.json.JSONObject
 
 class MainActivity : AppCompatActivity() {
 
