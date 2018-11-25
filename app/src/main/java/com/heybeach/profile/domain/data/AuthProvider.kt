@@ -1,6 +1,7 @@
 package com.heybeach.profile.domain.data
 
 import android.content.SharedPreferences
+import androidx.annotation.VisibleForTesting
 import androidx.core.content.edit
 import com.heybeach.http.Response
 import com.heybeach.profile.domain.model.SIGN_UP
@@ -10,6 +11,14 @@ import com.heybeach.profile.domain.model.UserResponse
 const val AUTH_KEY = "auth_key"
 
 class AuthProvider(private val preferences: SharedPreferences, private val remoteDataSource: UserRemoteDataSource) {
+
+    var user: User? = null
+        private set
+
+    @VisibleForTesting
+    fun mockUser(user: User) {
+        this.user = user
+    }
 
     fun hasUser() = preferences.contains(AUTH_KEY)
 
@@ -36,13 +45,24 @@ class AuthProvider(private val preferences: SharedPreferences, private val remot
     }
 
     suspend fun fetchUser(): Response<User> {
-        return remoteDataSource.fetchUser(token!!)
+        return if (user != null) {
+            Response.Success(user!!)
+        } else {
+            fetchRemoteUser()
+        }
+    }
+
+    private suspend fun fetchRemoteUser() = remoteDataSource.fetchUser(token!!).also {
+        if (it is Response.Success) {
+            user = it.data
+        }
     }
 
     suspend fun logOut() {
         if (token != null) {
             remoteDataSource.logOut(token!!)
         }
+        user = null
         preferences.edit {
             remove(AUTH_KEY)
         }

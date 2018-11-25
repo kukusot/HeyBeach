@@ -80,16 +80,17 @@ class AuthProviderTest {
     }
 
     @Test
-    fun `logged_in logout logout_remote_and_locally`() {
-        runBlocking {
-            val editor = mockPreferenceEditor()
-            whenever(sharedPreferences.getString(AUTH_KEY, "")).thenReturn(token)
+    fun `logged_in logout logout_remote_and_locally`() = runBlocking {
+        val editor = mockPreferenceEditor()
+        whenever(sharedPreferences.getString(AUTH_KEY, "")).thenReturn(token)
+        val user = User("id", "email")
+        authProvider.mockUser(user)
 
-            authProvider.logOut()
+        authProvider.logOut()
 
-            verify(editor).remove(AUTH_KEY)
-            verify(editor).apply()
-            verify(remoteDataSource).logOut(token)
-        }
+        verify(editor).remove(AUTH_KEY)
+        verify(editor).apply()
+        verify(remoteDataSource).logOut(token)
+        assertNull(authProvider.user)
     }
 }
