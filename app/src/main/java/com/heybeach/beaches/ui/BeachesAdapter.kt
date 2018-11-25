@@ -13,12 +13,10 @@ import kotlinx.android.synthetic.main.item_beach.view.*
 
 class BeachesAdapter : PagedListAdapter<Beach, BeachesAdapter.BeachViewHolder>(BeachesDiffCallback) {
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BeachViewHolder {
         val itemView = parent.context.getLayoutInflater().inflate(R.layout.item_beach, parent, false)
         return BeachViewHolder(itemView)
     }
-
 
     override fun onBindViewHolder(holder: BeachViewHolder, position: Int) {
         holder.onBind(getItem(position))
@@ -27,14 +25,10 @@ class BeachesAdapter : PagedListAdapter<Beach, BeachesAdapter.BeachViewHolder>(B
     class BeachViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         fun onBind(image: Beach?) {
-            if (image != null) {
-                itemView.imageView.ratio = image.ratio()
-                ImageLoader.loadImage(image.url, itemView.imageView)
-                itemView.imageName.text = image.name
-            } else {
-                itemView.imageView.setImageBitmap(null)
-                itemView.imageView.ratio = 1f
-                itemView.imageName.text = ""
+            itemView.apply {
+                ImageLoader.loadImage(image?.url, imageView)
+                imageView.ratio = image?.ratio() ?: 0f
+                imageName.text = image?.name ?: ""
             }
         }
     }

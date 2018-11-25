@@ -21,30 +21,36 @@ object ImageLoader {
         ImagesLoaderInjector.inject(this)
     }
 
-    fun loadImage(url: String, imageView: ImageView) {
-        recyclingMap[imageView.hashCode()] = url
+    fun loadImage(path: String?, imageView: ImageView) {
+        if (path == null) {
+            imageView.setImageBitmap(null)
+            return
+        }
+        recyclingMap[imageView.hashCode()] = path
 
-        if (memoryCache.hasItem(url)) {
-            imageView.setImageBitmap(memoryCache.get(url))
+        if (memoryCache.hasItem(path)) {
+            imageView.setImageBitmap(memoryCache.get(path))
         } else {
             imageView.setImageResource(R.drawable.ic_images)
-            scope.launch {
-                val bitmapResponse = remoteDataSource.fetchImage(url)
-                if (bitmapResponse is Response.Success) {
-                    val bitmap = bitmapResponse.data
-                    memoryCache.cache(url, bitmap)
+            loadImageFromNetwork(path, imageView)
+        }
+    }
 
-                    //Ensure that we are displaying the right the viewholder.
-                    if (recyclingMap[imageView.hashCode()] == url) {
-                        dispatchOnMainThread {
-                            imageView.setImageBitmap(bitmap)
-                        }
+    private fun loadImageFromNetwork(path: String, imageView: ImageView) {
+        scope.launch {
+            val bitmapResponse = remoteDataSource.fetchImage(path)
+            if (bitmapResponse is Response.Success) {
+                val bitmap = bitmapResponse.data
+                memoryCache.cache(path, bitmap)
+
+                //Ensure that we are displaying the right the viewholder.
+                if (recyclingMap[imageView.hashCode()] == path) {
+                    dispatchOnMainThread {
+                        imageView.setImageBitmap(bitmap)
                     }
                 }
             }
         }
-
-
     }
 
 

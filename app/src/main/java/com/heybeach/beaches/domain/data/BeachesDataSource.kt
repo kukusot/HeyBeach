@@ -15,12 +15,12 @@ import kotlinx.coroutines.launch
 class BeachesDataSource(private val remoteDataSource: BeachesRemoteDataSource) :
     PageKeyedDataSource<Int, Beach>() {
 
+    val networkState: LiveData<NetworkState>
+        get() = _networkState
+
     private val parentJob = Job()
     private val scope = CoroutineScope(GlobalProvider.io + parentJob)
     private val _networkState = MutableLiveData<NetworkState>()
-
-    val networkState: LiveData<NetworkState>
-        get() = _networkState
 
     private var retryFun: (() -> Any)? = null
 
@@ -28,6 +28,10 @@ class BeachesDataSource(private val remoteDataSource: BeachesRemoteDataSource) :
         val prevRetry = retryFun
         retryFun = null
         prevRetry?.invoke()
+    }
+
+    fun clear() {
+        parentJob.cancel()
     }
 
     override fun loadInitial(params: LoadInitialParams<Int>, callback: LoadInitialCallback<Int, Beach>) {
@@ -77,7 +81,4 @@ class BeachesDataSource(private val remoteDataSource: BeachesRemoteDataSource) :
     override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, Beach>) {
     }
 
-    fun clear() {
-        parentJob.cancel()
-    }
 }

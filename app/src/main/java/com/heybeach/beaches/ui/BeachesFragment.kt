@@ -21,6 +21,11 @@ class BeachesFragment : Fragment() {
     lateinit var layoutManager: RecyclerView.LayoutManager
     lateinit var viewModel: BeachesViewModel
 
+    override fun onAttach(context: Context?) {
+        BeachesFragmentInjector.inject(this)
+        super.onAttach(context)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) =
         inflater.inflate(R.layout.fragment_beaches, container, false)!!
 
@@ -29,24 +34,6 @@ class BeachesFragment : Fragment() {
         setupRecyclerView()
 
         observeViewModel()
-    }
-
-    private fun observeViewModel() {
-        viewModel.imagesDataResult.observe(this, Observer {
-            beachesAdapter.submitList(it)
-        })
-
-        viewModel.networkState.observe(this, Observer {
-            when (it) {
-                ERROR -> parentView.showRetrySnackBar {
-                    viewModel.retry()
-                    progress.setVisibility(false)
-                }
-                LOADING -> progress.setVisibility(true)
-                SUCCESS -> progress.setVisibility(false)
-                null -> progress.setVisibility(false)
-            }
-        })
     }
 
     private fun setupRecyclerView() {
@@ -58,9 +45,25 @@ class BeachesFragment : Fragment() {
         }
     }
 
-    override fun onAttach(context: Context?) {
-        BeachesFragmentInjector.inject(this)
-        super.onAttach(context)
+    private fun observeViewModel() {
+        viewModel.imagesDataResult.observe(this, Observer {
+            beachesAdapter.submitList(it)
+        })
+
+        viewModel.networkState.observe(this, Observer {
+            when (it) {
+                ERROR -> {
+                    progress.setVisibility(false)
+                    parentView.showRetrySnackBar {
+                        viewModel.retry()
+                    }
+                }
+
+                LOADING -> progress.setVisibility(true)
+                SUCCESS -> progress.setVisibility(false)
+                null -> progress.setVisibility(false)
+            }
+        })
     }
 
 }

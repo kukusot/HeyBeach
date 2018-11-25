@@ -30,7 +30,6 @@ inline fun <T> executeHttpRequest(
         urlConnection.errorStream.close()
         deferred.completeExceptionally(IOException(errorMessage))
     }
-
     urlConnection.disconnect()
 
     return deferred
@@ -44,12 +43,7 @@ fun createUrlConnection(params: HttpParams): HttpURLConnection {
     val url = URL(urlString)
     val connection = url.openConnection() as HttpURLConnection
     return connection.apply {
-        setRequestProperty("Accept", "application/json")
-        setRequestProperty("Content-Type", "application/json")
-        setRequestProperty("Cache-Control", "no-cache")
-        params.headers?.forEach {
-            setRequestProperty(it.key, it.value)
-        }
+        this withHeaders params.headers
 
         readTimeout = TIMEOUT
         connectTimeout = TIMEOUT
@@ -65,6 +59,15 @@ infix fun HttpURLConnection.withBody(body: String) {
     val writer = OutputStreamWriter(outputStream)
     writer.write(body)
     writer.close()
+}
+
+infix fun HttpURLConnection.withHeaders(headers: Map<String, String>?) {
+    setRequestProperty("Accept", "application/json")
+    setRequestProperty("Content-Type", "application/json")
+    setRequestProperty("Cache-Control", "no-cache")
+    headers?.forEach {
+        setRequestProperty(it.key, it.value)
+    }
 }
 
 inline fun <T : Any> safeApiCall(call: () -> Response<T>): Response<T> {

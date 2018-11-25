@@ -1,4 +1,4 @@
-package com.heybeach.ui
+package com.heybeach.widget
 
 import android.content.Context
 import android.util.AttributeSet

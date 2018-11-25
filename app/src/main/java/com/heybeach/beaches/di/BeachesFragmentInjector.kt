@@ -22,8 +22,14 @@ object BeachesFragmentInjector {
         BeachesRemoteDataSource(beachesService)
     }
 
-    private fun provideViewModelFactory() =
-        BeachesViewModelFactory(dataSourceFactory())
+    fun inject(fragment: BeachesFragment) {
+        fragment.viewModel =
+                ViewModelProviders.of(fragment, provideViewModelFactory()).get(BeachesViewModel::class.java)
+        fragment.beachesAdapter = BeachesAdapter()
+        fragment.layoutManager = provideLayoutManager(fragment.context!!)
+    }
+
+    private fun provideViewModelFactory() = BeachesViewModelFactory(dataSourceFactory())
 
     private fun dataSourceFactory() = BeachesDataSourceFactory(BeachesDataSource(beachesRemoteDataSource))
 
@@ -34,10 +40,4 @@ object BeachesFragmentInjector {
         )
     }
 
-    fun inject(fragment: BeachesFragment) {
-        fragment.viewModel =
-                ViewModelProviders.of(fragment, provideViewModelFactory()).get(BeachesViewModel::class.java)
-        fragment.beachesAdapter = BeachesAdapter()
-        fragment.layoutManager = provideLayoutManager(fragment.context!!)
-    }
 }

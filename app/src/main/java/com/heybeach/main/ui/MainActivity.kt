@@ -29,10 +29,10 @@ class MainActivity : AppCompatActivity() {
             return@setOnNavigationItemSelectedListener true
         }
 
-        setupViewModel()
+        observeViewModel()
     }
 
-    private fun setupViewModel() {
+    private fun observeViewModel() {
         viewModel.mainModel.observe(this, Observer { mainModel ->
             setupFragments(mainModel)
         })

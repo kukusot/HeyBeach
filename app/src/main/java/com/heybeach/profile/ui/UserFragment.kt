@@ -14,7 +14,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.heybeach.R
 import com.heybeach.profile.auth.ui.AuthActivity
 import com.heybeach.profile.di.UserFragmentInjector
-import com.heybeach.profile.domain.model.ACTION_KEY
 import com.heybeach.profile.domain.model.LOG_IN
 import com.heybeach.profile.domain.model.SIGN_UP
 import com.heybeach.profile.domain.model.User
@@ -23,11 +22,16 @@ import kotlinx.android.synthetic.main.fragment_user.*
 
 const val AUTH_REQUEST_CODE = 1001
 const val USER_KEY = "user"
+const val ACTION_KEY = "action_key"
 
 class UserFragment : Fragment() {
 
-
     lateinit var viewModel: UserViewModel
+
+    override fun onAttach(context: Context?) {
+        UserFragmentInjector.inject(this)
+        super.onAttach(context)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) =
         inflater.inflate(R.layout.fragment_user, container, false)!!
@@ -48,6 +52,13 @@ class UserFragment : Fragment() {
         }
 
         observeVIewModel()
+    }
+
+    private fun startAuthActivity(action: String) {
+        val intent = Intent(context, AuthActivity::class.java).apply {
+            putExtra(ACTION_KEY, action)
+        }
+        startActivityForResult(intent, AUTH_REQUEST_CODE)
     }
 
     private fun observeVIewModel() {
@@ -73,6 +84,18 @@ class UserFragment : Fragment() {
         })
     }
 
+    private fun showLoggedInState() {
+        loginButton.visibility = INVISIBLE
+        signupButton.visibility = INVISIBLE
+        logOutButton.visibility = VISIBLE
+    }
+
+    private fun showDefaultState() {
+        loginButton.visibility = VISIBLE
+        signupButton.visibility = VISIBLE
+        logOutButton.visibility = INVISIBLE
+    }
+
     private fun showUserInfo(user: User?) {
         val textVisibility = (user != null)
         emailText.apply {
@@ -85,35 +108,11 @@ class UserFragment : Fragment() {
         }
     }
 
-    private fun showDefaultState() {
-        loginButton.visibility = VISIBLE
-        signupButton.visibility = VISIBLE
-        logOutButton.visibility = INVISIBLE
-    }
-
-    private fun showLoggedInState() {
-        loginButton.visibility = INVISIBLE
-        signupButton.visibility = INVISIBLE
-        logOutButton.visibility = VISIBLE
-    }
-
-    private fun startAuthActivity(action: String) {
-        val intent = Intent(context, AuthActivity::class.java).apply {
-            putExtra(ACTION_KEY, action)
-        }
-        startActivityForResult(intent, AUTH_REQUEST_CODE)
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == AUTH_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             val user: User? = data?.getParcelableExtra(USER_KEY)
             viewModel.onLoggedIn(user)
         }
-    }
-
-    override fun onAttach(context: Context?) {
-        UserFragmentInjector.inject(this)
-        super.onAttach(context)
     }
 
 }

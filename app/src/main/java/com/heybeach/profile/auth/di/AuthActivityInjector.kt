@@ -10,11 +10,12 @@ import com.heybeach.profile.domain.data.AuthProvider
 object AuthActivityInjector {
 
     fun inject(activity: AuthActivity) {
-        activity.viewModel = ViewModelProviders.of(activity, provideAuthViewModelFactory()).get(AuthViewModel::class.java)
+        activity.viewModel =
+                ViewModelProviders.of(activity, provideAuthViewModelFactory()).get(AuthViewModel::class.java)
     }
 
-    private fun provideAuthProvider() = AuthProvider(GlobalProvider.preferences, GlobalProvider.authRemoteDataSource)
-
     private fun provideAuthViewModelFactory() = AuthViewModelFactory(provideAuthProvider())
+
+    private fun provideAuthProvider() = AuthProvider(GlobalProvider.preferences, GlobalProvider.authRemoteDataSource)
 
 }

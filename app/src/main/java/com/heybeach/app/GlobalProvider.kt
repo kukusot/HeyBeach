@@ -7,19 +7,20 @@ import com.heybeach.profile.domain.data.AuthService
 import com.heybeach.profile.domain.data.UserRemoteDataSource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @SuppressLint("StaticFieldLeak")
 object GlobalProvider {
+
+    val authRemoteDataSource: UserRemoteDataSource by lazy {
+        UserRemoteDataSource(AuthService())
+    }
 
     lateinit var appContext: Context
         private set
 
     lateinit var preferences: SharedPreferences
         private set
-
-    val authRemoteDataSource: UserRemoteDataSource by lazy {
-        UserRemoteDataSource(AuthService())
-    }
 
     lateinit var main: CoroutineDispatcher
         private set
@@ -33,6 +34,7 @@ object GlobalProvider {
         io = Dispatchers.IO
     }
 
+    @ExperimentalCoroutinesApi
     fun testInit(app: App, sharedPreferences: SharedPreferences) {
         appContext = app
         preferences = sharedPreferences

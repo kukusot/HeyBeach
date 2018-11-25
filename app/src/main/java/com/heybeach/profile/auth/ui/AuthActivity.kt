@@ -10,6 +10,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.heybeach.R
 import com.heybeach.profile.auth.di.AuthActivityInjector
 import com.heybeach.profile.domain.model.*
+import com.heybeach.profile.ui.ACTION_KEY
 import com.heybeach.profile.ui.USER_KEY
 import com.heybeach.utils.closeSoftKeyboard
 import com.heybeach.utils.createHtmlText

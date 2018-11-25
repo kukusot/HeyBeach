@@ -29,6 +29,7 @@ class AuthViewModel(private val authProvider: AuthProvider) : BaseViewModel() {
     fun validateAndAuth(data: SignupModel) {
         val validationResult = validateForm(data)
         _formData.value = validationResult
+
         if (validationResult.isEmpty()) {
             executeAuth(data)
         }
@@ -45,7 +46,6 @@ class AuthViewModel(private val authProvider: AuthProvider) : BaseViewModel() {
                 val errorResId = if (action == SIGN_UP) R.string.error_sign_up else R.string.error_logging_in
                 emitUiState(false, errorMessage = errorResId)
             }
-
         }
     }
 

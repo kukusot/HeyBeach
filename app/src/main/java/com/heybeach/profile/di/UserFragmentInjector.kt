@@ -9,12 +9,13 @@ import com.heybeach.profile.ui.UserViewModelFactory
 
 object UserFragmentInjector {
 
+    fun inject(fragment: UserFragment) {
+        fragment.viewModel =
+                ViewModelProviders.of(fragment, provideUserViewModelFactory()).get(UserViewModel::class.java)
+    }
+
     private fun provideAuthProvider() = AuthProvider(GlobalProvider.preferences, GlobalProvider.authRemoteDataSource)
 
     private fun provideUserViewModelFactory() = UserViewModelFactory(provideAuthProvider())
-
-    fun inject(fragment: UserFragment) {
-        fragment.viewModel = ViewModelProviders.of(fragment, provideUserViewModelFactory()).get(UserViewModel::class.java)
-    }
 
 }
