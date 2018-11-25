@@ -2,16 +2,16 @@ package com.heybeach.images
 
 import android.widget.ImageView
 import com.heybeach.R
+import com.heybeach.app.GlobalProvider
 import com.heybeach.http.Response
 import com.heybeach.utils.dispatchOnMainThread
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
 object ImageLoader {
 
-    private val scope = CoroutineScope(Dispatchers.IO)
+    private val scope = CoroutineScope(GlobalProvider.io)
     private val recyclingMap = HashMap<Int, String>()
 
     lateinit var remoteDataSource: ImagesRemoteDataSource

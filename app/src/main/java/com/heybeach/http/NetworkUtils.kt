@@ -13,7 +13,7 @@ import java.net.URL
 const val BASE_URL = "http://techtest.lab1886.io:3000/"
 const val TIMEOUT = 5000
 
-fun <T> executeHttpRequest(
+inline fun <T> executeHttpRequest(
     params: HttpParams,
     parse: (stream: InputStream, headers: Map<String, List<String>>) -> T
 ): Deferred<T> {
@@ -67,7 +67,7 @@ infix fun HttpURLConnection.withBody(body: String) {
     writer.close()
 }
 
-suspend fun <T : Any> safeApiCall(call: suspend () -> Response<T>): Response<T> {
+inline fun <T : Any> safeApiCall(call: () -> Response<T>): Response<T> {
     return try {
         call()
     } catch (e: Throwable) {

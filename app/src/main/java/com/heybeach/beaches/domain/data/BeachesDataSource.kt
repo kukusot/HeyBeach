@@ -3,12 +3,12 @@ package com.heybeach.beaches.domain.data
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
+import com.heybeach.app.GlobalProvider
 import com.heybeach.beaches.domain.data.NetworkState.*
 import com.heybeach.beaches.domain.model.Beach
 import com.heybeach.http.Response
 import com.heybeach.utils.dispatchOnMainThread
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
@@ -16,7 +16,7 @@ class BeachesDataSource(private val remoteDataSource: BeachesRemoteDataSource) :
     PageKeyedDataSource<Int, Beach>() {
 
     private val parentJob = Job()
-    private val scope = CoroutineScope(Dispatchers.IO + parentJob)
+    private val scope = CoroutineScope(GlobalProvider.io + parentJob)
     private val _networkState = MutableLiveData<NetworkState>()
 
     val networkState: LiveData<NetworkState>

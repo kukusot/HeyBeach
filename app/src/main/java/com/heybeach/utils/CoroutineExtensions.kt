@@ -1,10 +1,10 @@
 package com.heybeach.utils
 
-import kotlinx.coroutines.Dispatchers
+import com.heybeach.app.GlobalProvider
 import kotlinx.coroutines.withContext
 
 suspend fun dispatchOnMainThread(block: () -> Unit) {
-    withContext(Dispatchers.Main) {
+    withContext(GlobalProvider.main) {
         block()
     }
 }
